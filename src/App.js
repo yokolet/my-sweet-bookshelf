@@ -11,13 +11,33 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-     books: [],
+     allBooks: [],
+     books: {},
      showSearchPage: false
   }
+
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
+    BooksAPI.getAll().then((allBooks) => {
       this.setState((state) => ({
-        books: books
+        allBooks: allBooks,
+        books: {
+          "currentlyReading": allBooks.filter((book) => book.shelf === "currentlyReading"),
+          "wantToRead": allBooks.filter((book) => book.shelf === "wantToRead"),
+          "read": allBooks.filter((book) => book.shelf === "read")
+        }
+      }))
+    })
+  }
+
+  changeBookShelf = (book, shelf) => {
+    BooksAPI.update(book, shelf).then((bookIds) => {
+      let allBooks = this.state.allBooks
+      this.setState((state) => ({
+        books: {
+          "currentlyReading": allBooks.filter((book) => bookIds.currentlyReading.includes(book.id)),
+          "wantToRead": allBooks.filter((book) => bookIds.wantToRead.includes(book.id)),
+          "read": allBooks.filter((book) => bookIds.read.includes(book.id))
+        }
       }))
     })
   }
@@ -53,9 +73,24 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <ListBooks shelfTitle="Currently Reading" shelf="currentlyReading" books={this.state.books}/>
-                <ListBooks shelfTitle="Want to Read" shelf="wantToRead" books={this.state.books}/>
-                <ListBooks shelfTitle="Read" shelf="read" books={this.state.books}/>
+                <ListBooks
+                  shelfTitle="Currently Reading"
+                  shelf = "currentlyReading"
+                  books={this.state.books.currentlyReading}
+                  onChangeShelf={this.changeBookShelf}
+                />
+                <ListBooks
+                  shelfTitle="Want To Read"
+                  shelf = "wantToRead"
+                  books={this.state.books.wantToRead}
+                  onChangeShelf={this.changeBookShelf}
+                />
+                <ListBooks
+                  shelfTitle="Read"
+                  shelf = "read"
+                  books={this.state.books.read}
+                  onChangeShelf={this.changeBookShelf}
+                />
               </div>
             </div>
             <div className="open-search">
