@@ -2,21 +2,23 @@ import React, { Component } from 'react'
 
 class ListBooks extends Component {
   render() {
-    const { shelfTitle, catalog } = this.props
+    const { shelfTitle, shelf, books } = this.props
+    let showingBooks
+    showingBooks = books.filter(book => book.shelf === shelf)
     return (
       <div>
         <div className="bookshelf">
           <h2 className="bookshelf-title">{shelfTitle}</h2>
           <div className="bookshelf-books">
             <ol className="books-grid">
-              {catalog.map((book) => (
+              {showingBooks.map((book) => (
                 <li key={book.id} id={book.id}>
                   <div className="book">
                     <div className="book-top">
                       <div className="book-cover"
-                           style={{ width: book.cover.width,
-                                    height: book.cover.height,
-                                    backgroundImage: `url(${book.cover.url})` }}>
+                           style={{ width: 128,
+                                    height: 193,
+                                    backgroundImage: `url(${book.imageLinks.thumbnail})` }}>
                       </div>
                       <div className="book-shelf-changer">
                         <select>
@@ -29,7 +31,7 @@ class ListBooks extends Component {
                       </div>
                     </div>
                     <div className="book-title">{book.title}</div>
-                    <div className="book-authors">{book.author}</div>
+                    <div className="book-authors">{book.authors}</div>
                   </div>
                 </li>
               ))}

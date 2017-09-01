@@ -1,9 +1,7 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
-const uuidv4 = require('uuid/v4')
-const catalog = require('./data/book-catalog.json');
 
 class BooksApp extends React.Component {
   state = {
@@ -13,7 +11,15 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false
+     books: [],
+     showSearchPage: false
+  }
+  componentDidMount() {
+    BooksAPI.getAll().then((books) => {
+      this.setState((state) => ({
+        books: books
+      }))
+    })
   }
 
   render() {
@@ -47,9 +53,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <ListBooks shelfTitle={"Currently Reading"} catalog={catalog.reading} />
-                <ListBooks shelfTitle={"Want to Read"} catalog={catalog.wishlist} />
-                <ListBooks shelfTitle={"Read"} catalog={catalog.finished} />
+                <ListBooks shelfTitle="Currently Reading" shelf="currentlyReading" books={this.state.books}/>
+                <ListBooks shelfTitle="Want to Read" shelf="wantToRead" books={this.state.books}/>
+                <ListBooks shelfTitle="Read" shelf="read" books={this.state.books}/>
               </div>
             </div>
             <div className="open-search">
