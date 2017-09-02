@@ -29,7 +29,7 @@ class ListBooks extends Component {
                       </div>
                       <div className="book-shelf-changer">
                         <select value={shelf}
-                              onChange={(event) => onChangeShelf(book, event.target.value)}>
+                              onChange={(event) => onChangeShelf(book, event.target.value, shelf === "none")}>
                           <option value="none" disabled>Move to...</option>
                           <option value="currentlyReading">Currently Reading</option>
                           <option value="wantToRead">Want to Read</option>

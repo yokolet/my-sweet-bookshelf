@@ -12,14 +12,19 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
      allBooks: [],
+     allBookIds: [],
      books: {},
-     showSearchPage: false
+     showSearchPage: false,
+     query: '',
+     results: [],
+     tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[]}
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((allBooks) => {
       this.setState((state) => ({
         allBooks: allBooks,
+        allBookIds: allBooks.map((book) => book.id),
         books: {
           "currentlyReading": allBooks.filter((book) => book.shelf === "currentlyReading"),
           "wantToRead": allBooks.filter((book) => book.shelf === "wantToRead"),
@@ -29,26 +34,65 @@ class BooksApp extends React.Component {
     })
   }
 
-  changeBookShelf = (book, shelf) => {
+  changeBookShelf = (book, shelf, add) => {
     BooksAPI.update(book, shelf).then((bookIds) => {
+      book["shelf"] = shelf
       let allBooks = this.state.allBooks
+      let allBookIds = this.state.allBookIds
+      let tempBooks = this.state.tempBooks
+      if (add && !allBookIds.includes(book.id)) {
+        allBooks.push(book)
+        allBookIds.push(book.id)
+        tempBooks[shelf].push(book)
+      }
       this.setState((state) => ({
+        allBooks: allBooks,
+        allBookIds: allBookIds,
         books: {
           "currentlyReading": allBooks.filter((book) => bookIds.currentlyReading.includes(book.id)),
           "wantToRead": allBooks.filter((book) => bookIds.wantToRead.includes(book.id)),
           "read": allBooks.filter((book) => bookIds.read.includes(book.id))
-        }
+        },
+        tempBooks: tempBooks
       }))
     })
   }
 
+  searchBooks = (query, maxResults) => {
+    let queryWord = query.trim()
+    this.setState({ query: queryWord })
+    if (queryWord) {
+      BooksAPI.search(query, maxResults).then((results) => {
+        console.log(results)
+        if (!results || results["error"]) {
+          this.setState({
+            results: []
+          })
+        } else {
+          this.setState({results})
+        }
+      })
+    } else {
+      this.setState({
+        results: []
+      })
+    }
+  }
+
   render() {
+    const { query } = this.state
     return (
       <div className="app">
         {this.state.showSearchPage ? (
           <div className="search-books">
             <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
+              <a className="close-search"
+                onClick={() => this.setState({
+                  showSearchPage: false,
+                  query: '',
+                  results: [],
+                  tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[]}
+                })}>Close</a>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -58,12 +102,41 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author"/>
-
+                <input
+                  type="text"
+                  placeholder="Search by title or author"
+                  value={query}
+                  onChange={(event => this.searchBooks(event.target.value, 10))}
+                />
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <div>
+                <ListBooks
+                  shelfTitle="Results"
+                  shelf = "none"
+                  books={this.state.results}
+                  onChangeShelf={this.changeBookShelf}
+                />
+                <ListBooks
+                  shelfTitle="Currently Reading"
+                  shelf = "currentlyReading"
+                  books={this.state.tempBooks.currentlyReading}
+                  onChangeShelf={this.changeBookShelf}
+                />
+                <ListBooks
+                  shelfTitle="Want To Read"
+                  shelf = "wantToRead"
+                  books={this.state.tempBooks.wantToRead}
+                  onChangeShelf={this.changeBookShelf}
+                />
+                <ListBooks
+                  shelfTitle="Read"
+                  shelf = "read"
+                  books={this.state.tempBooks.read}
+                  onChangeShelf={this.changeBookShelf}
+                />
+              </div>
             </div>
           </div>
         ) : (
