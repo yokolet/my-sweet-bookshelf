@@ -24,7 +24,7 @@ class BooksApp extends React.Component {
     BooksAPI.getAll().then((allBooks) => {
       this.setState((state) => ({
         allBooks: allBooks,
-        allBookIds: allBooks.map((book) => book.id),
+        allBookIds: new Set(allBooks.map((book) => book.id)),
         books: {
           "currentlyReading": allBooks.filter((book) => book.shelf === "currentlyReading"),
           "wantToRead": allBooks.filter((book) => book.shelf === "wantToRead"),
@@ -34,27 +34,25 @@ class BooksApp extends React.Component {
     })
   }
 
-  changeBookShelf = (book, shelf, add) => {
+  changeBookShelf = (book, shelf, search) => {
     BooksAPI.update(book, shelf).then((bookIds) => {
       book["shelf"] = shelf
-      let allBooks = this.state.allBooks
-      let allBookIds = this.state.allBookIds
-      let tempBooks = this.state.tempBooks
-      if (add && !allBookIds.includes(book.id)) {
-        allBooks.push(book)
-        allBookIds.push(book.id)
+      if (search) {
+        let tempBooks = this.state.tempBooks
         tempBooks[shelf].push(book)
+        this.setState({
+          tempBooks: tempBooks
+        })
+      } else {
+        let allBooks = this.state.allBooks
+        this.setState({
+          books: {
+            "currentlyReading": allBooks.filter((book) => bookIds["currentlyReading"].includes(book.id)),
+            "wantToRead": allBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
+            "read": allBooks.filter((book) => bookIds["read"].includes(book.id))
+          }
+        })
       }
-      this.setState((state) => ({
-        allBooks: allBooks,
-        allBookIds: allBookIds,
-        books: {
-          "currentlyReading": allBooks.filter((book) => bookIds.currentlyReading.includes(book.id)),
-          "wantToRead": allBooks.filter((book) => bookIds.wantToRead.includes(book.id)),
-          "read": allBooks.filter((book) => bookIds.read.includes(book.id))
-        },
-        tempBooks: tempBooks
-      }))
     })
   }
 
@@ -63,7 +61,6 @@ class BooksApp extends React.Component {
     this.setState({ query: queryWord })
     if (queryWord) {
       BooksAPI.search(query, maxResults).then((results) => {
-        console.log(results)
         if (!results || results["error"]) {
           this.setState({
             results: []
@@ -79,6 +76,32 @@ class BooksApp extends React.Component {
     }
   }
 
+  closeSearch = () => {
+    let allBooks = this.state.allBooks
+    let allBookIds = this.state.allBookIds
+    let books = this.state.books
+    for (var key in books) {
+      let toBeAdded = this.state.tempBooks[key]
+      for (var i=0; i<toBeAdded.length; i++) {
+        let book = toBeAdded[i]
+        if (!allBookIds.has(book.id)) {
+          books[key].push(book)
+          allBooks.push(book)
+          allBookIds.add(book.id)
+        }
+      }
+    }
+    this.setState({
+      allBooks: allBooks,
+      allBookIds: allBookIds,
+      books: books,
+      showSearchPage: false,
+      query: '',
+      results: [],
+      tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[]}
+    })
+  }
+
   render() {
     const { query } = this.state
     return (
@@ -87,12 +110,7 @@ class BooksApp extends React.Component {
           <div className="search-books">
             <div className="search-books-bar">
               <a className="close-search"
-                onClick={() => this.setState({
-                  showSearchPage: false,
-                  query: '',
-                  results: [],
-                  tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[]}
-                })}>Close</a>
+                onClick={this.closeSearch}>Close</a>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -116,24 +134,28 @@ class BooksApp extends React.Component {
                   shelfTitle="Results"
                   shelf = "none"
                   books={this.state.results}
+                  search={true}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Currently Reading"
                   shelf = "currentlyReading"
                   books={this.state.tempBooks.currentlyReading}
+                  search={true}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Want To Read"
                   shelf = "wantToRead"
                   books={this.state.tempBooks.wantToRead}
+                  search={true}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Read"
                   shelf = "read"
                   books={this.state.tempBooks.read}
+                  search={true}
                   onChangeShelf={this.changeBookShelf}
                 />
               </div>
@@ -150,18 +172,21 @@ class BooksApp extends React.Component {
                   shelfTitle="Currently Reading"
                   shelf = "currentlyReading"
                   books={this.state.books.currentlyReading}
+                  search={false}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Want To Read"
                   shelf = "wantToRead"
                   books={this.state.books.wantToRead}
+                  search={false}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Read"
                   shelf = "read"
                   books={this.state.books.read}
+                  search={false}
                   onChangeShelf={this.changeBookShelf}
                 />
               </div>
