@@ -17,7 +17,7 @@ class BooksApp extends React.Component {
      showSearchPage: false,
      query: '',
      results: [],
-     tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[]}
+     tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[], "none": []}
   }
 
   componentDidMount() {
@@ -35,22 +35,30 @@ class BooksApp extends React.Component {
   }
 
   changeBookShelf = (book, shelf, search) => {
+    book["shelf"] = shelf
     BooksAPI.update(book, shelf).then((bookIds) => {
-      book["shelf"] = shelf
-      if (search) {
-        let tempBooks = this.state.tempBooks
-        tempBooks[shelf].push(book)
-        this.setState({
-          tempBooks: tempBooks
-        })
-      } else {
+      if (bookIds && !bookIds["error"]) {
         let allBooks = this.state.allBooks
+        let allBookIds = this.state.allBookIds
+        let tempBooks = this.state.tempBooks
+        for (var key in bookIds) {
+          if (search) {
+            tempBooks[key].push(book)
+            if (!allBookIds.has(book.id)) {
+              allBooks.push(book)
+              allBookIds.add(book.id)
+            }
+          }
+        }
         this.setState({
+          allBooks: allBooks,
+          allBookIds: allBookIds,
           books: {
             "currentlyReading": allBooks.filter((book) => bookIds["currentlyReading"].includes(book.id)),
             "wantToRead": allBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
             "read": allBooks.filter((book) => bookIds["read"].includes(book.id))
-          }
+          },
+          tempBooks: tempBooks
         })
       }
     })
