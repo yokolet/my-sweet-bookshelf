@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import './Custom.css'
 
 class ListBooks extends Component {
   static propTypes = {
@@ -11,11 +12,11 @@ class ListBooks extends Component {
 
   render() {
     const { shelfTitle, shelf, books, onChangeShelf } = this.props
-
+    let noBook = shelfTitle === "Results" ? "No Results" : "No Book"
     return (
       <div>
         <div className="bookshelf">
-          <h2 className="bookshelf-title">{shelfTitle}</h2>
+          <h2 className="bookshelf-title custom-shelf-title">{shelfTitle}</h2>
           <div className="bookshelf-books">
             {books && books.length > 0 ? (
               <ol className="books-grid">
@@ -48,7 +49,7 @@ class ListBooks extends Component {
                 ))}
               </ol>
             ) : (
-              <div>No Book</div>
+              <div className="no-book">{noBook}</div>
             )}
           </div>
         </div>

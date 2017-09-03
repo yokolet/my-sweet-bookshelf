@@ -1,0 +1,27 @@
+.custom-list-books-title {
+  padding: 10px 0;
+  background: linear-gradient(#2e7c31, #8bad67);
+  text-align: center;
+}
+
+.custom-list-books {
+  background-color: #fffff0;
+}
+
+.custom-list-books-title {
+  text-shadow: 1px 1px 2px #2b462c;
+}
+
+.custom-shelf-title {
+  text-shadow: 1px 1px 2px #bbb;
+}
+
+.no-book {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #aaa;
+}
+
+.custom-search-books-result {
+  background-color: #fffff0;
+}

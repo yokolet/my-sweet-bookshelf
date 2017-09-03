@@ -2,17 +2,12 @@ import React from 'react'
 import { Route, Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
+import './Custom.css'
 import ListBooks from './ListBooks'
 import SearchBooks from './SearchBooks'
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
      allBooks: [],
      books: {}
   }
@@ -69,9 +64,9 @@ class BooksApp extends React.Component {
           <SearchBooks/>
         )}/>
         <Route exact path='/' render={() => (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
+          <div className="list-books custom-list-books">
+            <div className="list-books-title custom-list-books-title">
+              <h1>My Sweet Bookshelf</h1>
             </div>
             <div className="list-books-content">
               <div>

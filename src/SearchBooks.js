@@ -78,7 +78,7 @@ class SearchBooks extends Component {
             />
           </div>
         </div>
-        <div className="search-books-results">
+        <div className="search-books-results custom-search-books-result">
           <div>
             <ListBooks
               shelfTitle="Results"
