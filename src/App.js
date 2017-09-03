@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
+import './custom.css'
 import ListBooks from './ListBooks'
 
 class BooksApp extends React.Component {
@@ -17,6 +18,7 @@ class BooksApp extends React.Component {
      books: {},
      query: '',
      results: [],
+     tempAllBooks: [],
      tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[], "none": []}
   }
 
@@ -40,14 +42,14 @@ class BooksApp extends React.Component {
       if (bookIds && !bookIds["error"]) {
         let allBooks = this.state.allBooks
         let allBookIds = this.state.allBookIds
-        let tempBooks = this.state.tempBooks
-        for (var key in bookIds) {
-          if (search) {
-            tempBooks[key].push(book)
-            if (!allBookIds.has(book.id)) {
-              allBooks.push(book)
-              allBookIds.add(book.id)
-            }
+        let tempAllBooks = this.state.tempAllBooks
+        if (search) {
+          if (!tempAllBooks.includes(book)) {
+            tempAllBooks.push(book)
+          }
+          if (!allBookIds.has(book.id)) {
+            allBooks.push(book)
+            allBookIds.add(book.id)
           }
         }
         this.setState({
@@ -58,7 +60,12 @@ class BooksApp extends React.Component {
             "wantToRead": allBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
             "read": allBooks.filter((book) => bookIds["read"].includes(book.id))
           },
-          tempBooks: tempBooks
+          tempAllBooks: tempAllBooks,
+          tempBooks: {
+            "currentlyReading": tempAllBooks.filter((book) => bookIds["currentlyReading"].includes(book.id)),
+            "wantToRead": tempAllBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
+            "read": tempAllBooks.filter((book) => bookIds["read"].includes(book.id))
+          }
         })
       }
     })
@@ -84,28 +91,21 @@ class BooksApp extends React.Component {
     }
   }
 
-  closeSearch = () => {
-    let allBooks = this.state.allBooks
-    let allBookIds = this.state.allBookIds
-    let books = this.state.books
-    for (var key in books) {
-      let toBeAdded = this.state.tempBooks[key]
-      for (var i=0; i<toBeAdded.length; i++) {
-        let book = toBeAdded[i]
-        if (!allBookIds.has(book.id)) {
-          books[key].push(book)
-          allBooks.push(book)
-          allBookIds.add(book.id)
-        }
-      }
-    }
+  clearSearch = () => {
     this.setState({
-      allBooks: allBooks,
-      allBookIds: allBookIds,
-      books: books,
       query: '',
       results: [],
-      tempBooks: {"currentlyReading": [], "wantToRead": [], "read":[]}
+      tempAllBooks: [],
+      tempBooks: {}
+    })
+  }
+
+  closeSearch = () => {
+    this.setState({
+      query: '',
+      results: [],
+      tempAllBooks: [],
+      tempBooks: {}
     })
   }
 
@@ -119,7 +119,7 @@ class BooksApp extends React.Component {
               <Link className="close-search" to='/' onClick={this.closeSearch}>
                 Close
               </Link>
-              <div className="search-books-input-wrapper">
+              <div className="custom-search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
                   You can find these search terms here:
@@ -134,6 +134,9 @@ class BooksApp extends React.Component {
                   value={query}
                   onChange={(event => this.searchBooks(event.target.value, 10))}
                 />
+                <button className="custom-search-clear" onClick={this.clearSearch}>
+                  Clear
+                </button>
               </div>
             </div>
             <div className="search-books-results">
