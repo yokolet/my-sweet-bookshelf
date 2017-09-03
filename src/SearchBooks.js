@@ -84,28 +84,24 @@ class SearchBooks extends Component {
               shelfTitle="Results"
               shelf = "none"
               books={this.state.results}
-              search={true}
               onChangeShelf={this.changeShelfOnSearch}
             />
             <ListBooks
               shelfTitle="Currently Reading"
               shelf = "currentlyReading"
               books={this.state.tempBooks.currentlyReading}
-              search={true}
               onChangeShelf={this.changeShelfOnSearch}
             />
             <ListBooks
               shelfTitle="Want To Read"
               shelf = "wantToRead"
               books={this.state.tempBooks.wantToRead}
-              search={true}
               onChangeShelf={this.changeShelfOnSearch}
             />
             <ListBooks
               shelfTitle="Read"
               shelf = "read"
               books={this.state.tempBooks.read}
-              search={true}
               onChangeShelf={this.changeShelfOnSearch}
             />
           </div>

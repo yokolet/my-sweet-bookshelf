@@ -45,7 +45,7 @@ class BooksApp extends React.Component {
     })
   }
 
-  changeBookShelf = (book, shelf, search) => {
+  changeBookShelf = (book, shelf) => {
     book["shelf"] = shelf
     BooksAPI.update(book, shelf).then((bookIds) => {
       if (bookIds && !bookIds["error"]) {
@@ -79,21 +79,18 @@ class BooksApp extends React.Component {
                   shelfTitle="Currently Reading"
                   shelf = "currentlyReading"
                   books={this.state.books.currentlyReading}
-                  search={false}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Want To Read"
                   shelf = "wantToRead"
                   books={this.state.books.wantToRead}
-                  search={false}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Read"
                   shelf = "read"
                   books={this.state.books.read}
-                  search={false}
                   onChangeShelf={this.changeBookShelf}
                 />
               </div>
