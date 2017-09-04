@@ -1,10 +1,16 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import * as BooksAPI from './BooksAPI'
 import ListBooks from './ListBooks'
 import './App.css'
 
 class SearchBooks extends Component {
+  static propTypes = {
+    books: PropTypes.array.isRequired,
+    allBooks: PropTypes.array.isRequired,
+  }
+
   state = {
      query: '',
      results: [],
@@ -32,20 +38,20 @@ class SearchBooks extends Component {
     }
   }
 
-  changeShelfOnSearch = (book, shelf) => {
+  changeShelfOnSearch = (book, shelf, allBooks) => {
     book["shelf"] = shelf
     BooksAPI.update(book, shelf).then((bookIds) => {
       if (bookIds && !bookIds["error"]) {
-        let tempAllBooks = this.state.tempAllBooks
-        if (!tempAllBooks.includes(book)) {
-          tempAllBooks.push(book)
+        var allIds = allBooks.map((book) => book.id)
+        if (!allIds.includes(book.id)) {
+          allBooks.push(book)
         }
         this.setState({
-          tempAllBooks: tempAllBooks,
+          tempAllBooks: allBooks,
           tempBooks: {
-            "currentlyReading": tempAllBooks.filter((book) => bookIds["currentlyReading"].includes(book.id)),
-            "wantToRead": tempAllBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
-            "read": tempAllBooks.filter((book) => bookIds["read"].includes(book.id))
+            "currentlyReading": allBooks.filter((book) => bookIds["currentlyReading"].includes(book.id)),
+            "wantToRead": allBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
+            "read": allBooks.filter((book) => bookIds["read"].includes(book.id))
           }
         })
       }
@@ -53,6 +59,7 @@ class SearchBooks extends Component {
   }
 
   render() {
+    const { allBooks, books} = this.props
     const { query } = this.state
 
     return (
@@ -84,24 +91,28 @@ class SearchBooks extends Component {
               shelfTitle="Results"
               shelf = "none"
               books={this.state.results}
+              allBooks={allBooks}
               onChangeShelf={this.changeShelfOnSearch}
             />
             <ListBooks
               shelfTitle="Currently Reading"
               shelf = "currentlyReading"
-              books={this.state.tempBooks.currentlyReading}
+              books={books.currentlyReading}
+              allBooks={allBooks}
               onChangeShelf={this.changeShelfOnSearch}
             />
             <ListBooks
               shelfTitle="Want To Read"
               shelf = "wantToRead"
-              books={this.state.tempBooks.wantToRead}
+              books={books.wantToRead}
+              allBooks={allBooks}
               onChangeShelf={this.changeShelfOnSearch}
             />
             <ListBooks
               shelfTitle="Read"
               shelf = "read"
-              books={this.state.tempBooks.read}
+              books={books.read}
+              allBooks={allBooks}
               onChangeShelf={this.changeShelfOnSearch}
             />
           </div>

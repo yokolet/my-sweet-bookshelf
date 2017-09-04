@@ -40,11 +40,10 @@ class BooksApp extends React.Component {
     })
   }
 
-  changeBookShelf = (book, shelf) => {
+  changeBookShelf = (book, shelf, allBooks) => {
     book["shelf"] = shelf
     BooksAPI.update(book, shelf).then((bookIds) => {
       if (bookIds && !bookIds["error"]) {
-        let allBooks = this.state.allBooks
         this.setState({
           allBooks: allBooks,
           books: {
@@ -60,10 +59,13 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        <Route path='/search' render={({ history }) => (
-          <SearchBooks/>
+        <Route path="/search" render={({ history }) => (
+          <SearchBooks
+            allBooks={this.state.allBooks}
+            books={this.state.books}
+            />
         )}/>
-        <Route exact path='/' render={() => (
+        <Route exact path="/" render={() => (
           <div className="list-books custom-list-books">
             <div className="list-books-title custom-list-books-title">
               <h1>My Sweet Bookshelf</h1>
@@ -74,23 +76,26 @@ class BooksApp extends React.Component {
                   shelfTitle="Currently Reading"
                   shelf = "currentlyReading"
                   books={this.state.books.currentlyReading}
+                  allBooks={this.state.allBooks}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Want To Read"
                   shelf = "wantToRead"
                   books={this.state.books.wantToRead}
+                  allBooks={this.state.allBooks}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Read"
                   shelf = "read"
                   books={this.state.books.read}
+                  allBooks={this.state.allBooks}
                   onChangeShelf={this.changeBookShelf}
                 />
               </div>
             </div>
-            <Link className="open-search" to='/search'>
+            <Link className="open-search" to="/search">
               <a>Add a book</a>
             </Link>
           </div>

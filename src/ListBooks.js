@@ -7,11 +7,12 @@ class ListBooks extends Component {
     shelfTitle: PropTypes.string.isRequired,
     shelf: PropTypes.string.isRequired,
     books: PropTypes.array.isRequired,
+    allBooks: PropTypes.array.isRequired,
     onChangeShelf: PropTypes.func.isRequired
   }
 
   render() {
-    const { shelfTitle, shelf, books, onChangeShelf } = this.props
+    const { shelfTitle, shelf, books, allBooks, onChangeShelf } = this.props
     let noBook = shelfTitle === "Results" ? "No Results" : "No Book"
     return (
       <div>
@@ -33,7 +34,7 @@ class ListBooks extends Component {
                         }
                         <div className="book-shelf-changer">
                           <select value={shelf}
-                                onChange={(event) => onChangeShelf(book, event.target.value)}>
+                                onChange={(event) => onChangeShelf(book, event.target.value, allBooks)}>
                             <option value="none" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
