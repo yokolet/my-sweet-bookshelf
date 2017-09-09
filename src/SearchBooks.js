@@ -7,15 +7,12 @@ import './App.css'
 
 class SearchBooks extends Component {
   static propTypes = {
-    books: PropTypes.array.isRequired,
-    allBooks: PropTypes.array.isRequired,
+    allBooks: PropTypes.array.isRequired
   }
 
   state = {
      query: '',
-     results: [],
-     tempAllBooks: [],
-     tempBooks: {}
+     results: []
   }
 
   searchBooks = (query, maxResults, allBooks) => {
