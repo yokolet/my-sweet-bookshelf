@@ -25,21 +25,6 @@ class BooksApp extends React.Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    BooksAPI.getAll().then((allBooks) => {
-      if (allBooks && !allBooks["error"]) {
-        this.setState((state) => ({
-          allBooks: allBooks,
-          books: {
-            "currentlyReading": allBooks.filter((book) => book.shelf === "currentlyReading"),
-            "wantToRead": allBooks.filter((book) => book.shelf === "wantToRead"),
-            "read": allBooks.filter((book) => book.shelf === "read")
-          }
-        }))
-      }
-    })
-  }
-
   changeBookShelf = (book, shelf, allBooks) => {
     if (book.shelf !== shelf) {
       BooksAPI.update(book, shelf).then(() => {
