@@ -40,7 +40,7 @@ class BooksApp extends React.Component {
       <div className="app">
         <Route path="/search" render={({ history }) => (
           <SearchBooks
-            allBooks={this.state.allBooks}
+            allBooks={allBooks}
             onChangeShelf={this.changeBookShelf}
             />
         )}/>
@@ -55,21 +55,21 @@ class BooksApp extends React.Component {
                   shelfTitle="Currently Reading"
                   shelf = "currentlyReading"
                   books={currentlyReading}
-                  allBooks={this.state.allBooks}
+                  allBooks={allBooks}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Want To Read"
                   shelf = "wantToRead"
                   books={wantToRead}
-                  allBooks={this.state.allBooks}
+                  allBooks={allBooks}
                   onChangeShelf={this.changeBookShelf}
                 />
                 <ListBooks
                   shelfTitle="Read"
                   shelf = "read"
                   books={read}
-                  allBooks={this.state.allBooks}
+                  allBooks={allBooks}
                   onChangeShelf={this.changeBookShelf}
                 />
               </div>
