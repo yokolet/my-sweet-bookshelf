@@ -8,19 +8,13 @@ import SearchBooks from './SearchBooks'
 
 class BooksApp extends React.Component {
   state = {
-     allBooks: [],
-     books: {}
+     allBooks: []
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((allBooks) => {
       this.setState((state) => ({
-        allBooks: allBooks,
-        books: {
-          "currentlyReading": allBooks.filter((book) => book.shelf === "currentlyReading"),
-          "wantToRead": allBooks.filter((book) => book.shelf === "wantToRead"),
-          "read": allBooks.filter((book) => book.shelf === "read")
-        }
+        allBooks: allBooks
       }))
     })
   }
