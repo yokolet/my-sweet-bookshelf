@@ -41,19 +41,14 @@ class BooksApp extends React.Component {
   }
 
   changeBookShelf = (book, shelf, allBooks) => {
-    book["shelf"] = shelf
-    BooksAPI.update(book, shelf).then((bookIds) => {
-      if (bookIds && !bookIds["error"]) {
-        this.setState({
-          allBooks: allBooks,
-          books: {
-            "currentlyReading": allBooks.filter((book) => bookIds["currentlyReading"].includes(book.id)),
-            "wantToRead": allBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
-            "read": allBooks.filter((book) => bookIds["read"].includes(book.id))
-          }
-        })
-      }
-    })
+    if (book.shelf !== shelf) {
+      BooksAPI.update(book, shelf).then(() => {
+        book.shelf = shelf
+        this.setState(state => ({
+          allBooks: state.allBooks.filter(b => b.id !== book.id).concat([ book ])
+        }))
+      })
+    }
   }
 
   render() {
