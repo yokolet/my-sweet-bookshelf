@@ -7,7 +7,8 @@ import './App.css'
 
 class SearchBooks extends Component {
   static propTypes = {
-    allBooks: PropTypes.array.isRequired
+    allBooks: PropTypes.array.isRequired,
+    onChangeShelf: PropTypes.func.isRequired
   }
 
   state = {
