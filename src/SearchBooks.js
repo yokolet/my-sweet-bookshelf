@@ -41,29 +41,14 @@ class SearchBooks extends Component {
     }
   }
 
-  changeShelfOnSearch = (book, shelf, allBooks) => {
-    book["shelf"] = shelf
-    BooksAPI.update(book, shelf).then((bookIds) => {
-      if (bookIds && !bookIds["error"]) {
-        var allIds = allBooks.map((book) => book.id)
-        if (!allIds.includes(book.id)) {
-          allBooks.push(book)
-        }
-        this.setState({
-          tempAllBooks: allBooks,
-          tempBooks: {
-            "currentlyReading": allBooks.filter((book) => bookIds["currentlyReading"].includes(book.id)),
-            "wantToRead": allBooks.filter((book) => bookIds["wantToRead"].includes(book.id)),
-            "read": allBooks.filter((book) => bookIds["read"].includes(book.id))
-          }
-        })
-      }
-    })
-  }
-
   render() {
-    const { allBooks, books} = this.props
+    const { allBooks, onChangeShelf} = this.props
     const { query } = this.state
+
+    const resultBooks = this.state.results.filter(book => (!book.shelf || book.shelf === "none"))
+    const currentlyReading = allBooks.filter(book => book.shelf === "currentlyReading")
+    const wantToRead = allBooks.filter(book => book.shelf === "wantToRead")
+    const read = allBooks.filter(book => book.shelf === "read")
 
     return (
       <div className="search-books">
@@ -93,30 +78,30 @@ class SearchBooks extends Component {
             <ListBooks
               shelfTitle="Results"
               shelf = "none"
-              books={this.state.results}
+              books={resultBooks}
               allBooks={allBooks}
-              onChangeShelf={this.changeShelfOnSearch}
+              onChangeShelf={onChangeShelf}
             />
             <ListBooks
               shelfTitle="Currently Reading"
               shelf = "currentlyReading"
-              books={books.currentlyReading}
+              books={currentlyReading}
               allBooks={allBooks}
-              onChangeShelf={this.changeShelfOnSearch}
+              onChangeShelf={onChangeShelf}
             />
             <ListBooks
               shelfTitle="Want To Read"
               shelf = "wantToRead"
-              books={books.wantToRead}
+              books={wantToRead}
               allBooks={allBooks}
-              onChangeShelf={this.changeShelfOnSearch}
+              onChangeShelf={onChangeShelf}
             />
             <ListBooks
               shelfTitle="Read"
               shelf = "read"
-              books={books.read}
+              books={read}
               allBooks={allBooks}
-              onChangeShelf={this.changeShelfOnSearch}
+              onChangeShelf={onChangeShelf}
             />
           </div>
         </div>
