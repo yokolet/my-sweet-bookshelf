@@ -18,7 +18,7 @@ class SearchBooks extends Component {
      tempBooks: {}
   }
 
-  searchBooks = (query, maxResults) => {
+  searchBooks = (query, maxResults, allBooks) => {
     let queryWord = query.trim()
     this.setState({ query: queryWord })
     if (queryWord) {
@@ -28,7 +28,10 @@ class SearchBooks extends Component {
             results: []
           })
         } else {
-          this.setState({results})
+          let allIds = allBooks.map(book => book.id)
+          this.setState({
+            results: results.filter(book => !allIds.includes(book.id))
+          })
         }
       })
     } else {
@@ -81,7 +84,7 @@ class SearchBooks extends Component {
               type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={(event => this.searchBooks(event.target.value, 10))}
+              onChange={(event => this.searchBooks(event.target.value, 10, allBooks))}
             />
           </div>
         </div>
