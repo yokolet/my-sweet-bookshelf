@@ -3,7 +3,7 @@ import { Route, Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import './Custom.css'
-import ListBooks from './ListBooks'
+import BookShelves from './BookShelves'
 import SearchBooks from './SearchBooks'
 
 class BooksApp extends React.Component {
@@ -32,9 +32,27 @@ class BooksApp extends React.Component {
 
   render() {
     const { allBooks } = this.state
+
     const currentlyReading = allBooks.filter(book => book.shelf === "currentlyReading")
     const wantToRead = allBooks.filter(book => book.shelf === "wantToRead")
     const read = allBooks.filter(book => book.shelf === "read")
+    const bookShelfData = [
+      {
+        shelfTitle: "Currently Reading",
+        shelf: "currentlyReading",
+        books: currentlyReading
+      },
+      {
+        shelfTitle: "Want To Read",
+        shelf: "wantToRead",
+        books: wantToRead
+      },
+      {
+        shelfTitle: "Read",
+        shelf: "read",
+        books: read
+      }
+    ]
 
     return (
       <div className="app">
@@ -50,29 +68,11 @@ class BooksApp extends React.Component {
               <h1>My Sweet Bookshelf</h1>
             </div>
             <div className="list-books-content">
-              <div>
-                <ListBooks
-                  shelfTitle="Currently Reading"
-                  shelf = "currentlyReading"
-                  books={currentlyReading}
-                  allBooks={allBooks}
-                  onChangeShelf={this.changeBookShelf}
-                />
-                <ListBooks
-                  shelfTitle="Want To Read"
-                  shelf = "wantToRead"
-                  books={wantToRead}
-                  allBooks={allBooks}
-                  onChangeShelf={this.changeBookShelf}
-                />
-                <ListBooks
-                  shelfTitle="Read"
-                  shelf = "read"
-                  books={read}
-                  allBooks={allBooks}
-                  onChangeShelf={this.changeBookShelf}
-                />
-              </div>
+              <BookShelves
+                bookShelfData={bookShelfData}
+                allBooks={allBooks}
+                onChangeShelf={this.changeBookShelf}
+              />
             </div>
             <Link className="open-search" to="/search">
               <a>Add a book</a>

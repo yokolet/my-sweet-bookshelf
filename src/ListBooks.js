@@ -19,22 +19,23 @@ class ListBooks extends Component {
         <div className="bookshelf">
           <h2 className="bookshelf-title custom-shelf-title">{shelfTitle}</h2>
           <div className="bookshelf-books">
-            {books && books.length > 0 ? (
+            { books && books.length > 0 ? (
               <ol className="books-grid">
-                {books.map((book) => (
+                { books.map((book) => (
                   <li key={book.id} id={book.id}>
                     <div className="book">
                       <div className="book-top">
-                        {book.imageLinks && book.imageLinks.thumbnail &&
+                        { book.imageLinks && book.imageLinks.thumbnail &&
                           <div className="book-cover"
-                               style={{ width: 128,
-                                        height: 193,
-                                        backgroundImage: `url(${book.imageLinks.thumbnail})` }}>
+                               style={{width: 128,
+                                       height: 193,
+                                       backgroundImage: `url(${book.imageLinks.thumbnail})`}}>
                           </div>
                         }
                         <div className="book-shelf-changer">
-                          <select value={shelf}
-                                onChange={(event) => onChangeShelf(book, event.target.value, allBooks)}>
+                          <select
+                            value={shelf}
+                            onChange={(event) => onChangeShelf(book, event.target.value, allBooks)}>
                             <option value="none" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>

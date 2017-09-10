@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import * as BooksAPI from './BooksAPI'
-import ListBooks from './ListBooks'
+import BookShelves from './BookShelves'
 import './App.css'
 
 class SearchBooks extends Component {
@@ -47,6 +47,28 @@ class SearchBooks extends Component {
     const currentlyReading = allBooks.filter(book => book.shelf === "currentlyReading")
     const wantToRead = allBooks.filter(book => book.shelf === "wantToRead")
     const read = allBooks.filter(book => book.shelf === "read")
+    const bookShelfData = [
+      {
+        shelfTitle: "Results",
+        shelf: "none",
+        books: resultBooks
+      },
+      {
+        shelfTitle: "Currently Reading",
+        shelf: "currentlyReading",
+        books: currentlyReading
+      },
+      {
+        shelfTitle: "Want To Read",
+        shelf: "wantToRead",
+        books: wantToRead
+      },
+      {
+        shelfTitle: "Read",
+        shelf: "read",
+        books: read
+      }
+    ]
 
     return (
       <div className="search-books">
@@ -72,36 +94,11 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results custom-search-books-result">
-          <div>
-            <ListBooks
-              shelfTitle="Results"
-              shelf = "none"
-              books={resultBooks}
-              allBooks={allBooks}
-              onChangeShelf={onChangeShelf}
-            />
-            <ListBooks
-              shelfTitle="Currently Reading"
-              shelf = "currentlyReading"
-              books={currentlyReading}
-              allBooks={allBooks}
-              onChangeShelf={onChangeShelf}
-            />
-            <ListBooks
-              shelfTitle="Want To Read"
-              shelf = "wantToRead"
-              books={wantToRead}
-              allBooks={allBooks}
-              onChangeShelf={onChangeShelf}
-            />
-            <ListBooks
-              shelfTitle="Read"
-              shelf = "read"
-              books={read}
-              allBooks={allBooks}
-              onChangeShelf={onChangeShelf}
-            />
-          </div>
+          <BookShelves
+            bookShelfData={bookShelfData}
+            allBooks={allBooks}
+            onChangeShelf={onChangeShelf}
+          />
         </div>
       </div>
     )
