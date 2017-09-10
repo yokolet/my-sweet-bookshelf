@@ -26,7 +26,7 @@
   background-color: #fffff0;
 }
 
-@media (max-width: 500px) {
+@media screen and  (min-width: 350px) and (max-width: 760px) {
   .list-books-title h1 {
     font-size: 28px;
   }
@@ -38,5 +38,20 @@
   .book-top {
     width: 108px;
     height: 160px;
+  }
+}
+
+@media screen and  (max-width: 350px) {
+  .list-books-title h1 {
+    font-size: 24px;
+  }
+
+  .custom-shelf-title {
+    font-size: 17px;
+  }
+
+  .book-top {
+    width: 84px;
+    height: 128px;
   }
 }

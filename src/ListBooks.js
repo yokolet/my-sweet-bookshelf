@@ -31,16 +31,22 @@ class ListBooks extends Component {
 
   bookCoverStyle = (imageUrl) => {
     let style
-    if (this.state.width > 500) {
+    if (this.state.width > 760) {
       style = {
         width: 128,
-        height: 193,
+        height: 192,
+        backgroundImage: `url(${imageUrl})`
+      }
+    } else if (this.state.width > 350){
+      style = {
+        width: 102,
+        height: 154,
         backgroundImage: `url(${imageUrl})`
       }
     } else {
       style = {
-        width: 102,
-        height: 154,
+        width: 80,
+        height: 124,
         backgroundImage: `url(${imageUrl})`
       }
     }
