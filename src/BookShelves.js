@@ -16,6 +16,7 @@ class BookShelves extends Component {
       <div>
         { bookShelfData.map(shelfData => (
           <ListBooks
+            key={shelfData["shelf"]}
             shelfTitle={shelfData["shelfTitle"]}
             shelf={shelfData["shelf"]}
             books={shelfData["books"]}
