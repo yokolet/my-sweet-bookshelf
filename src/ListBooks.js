@@ -11,9 +11,46 @@ class ListBooks extends Component {
     onChangeShelf: PropTypes.func.isRequired
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      width: window.innerWidth
+    }
+  }
+
+  updateWindowDimensions = () => {
+    this.setState({
+      width: window.innerWidth
+    })
+  }
+
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+
+  bookCoverStyle = (imageUrl) => {
+    let style
+    if (this.state.width > 500) {
+      style = {
+        width: 128,
+        height: 193,
+        backgroundImage: `url(${imageUrl})`
+      }
+    } else {
+      style = {
+        width: 102,
+        height: 154,
+        backgroundImage: `url(${imageUrl})`
+      }
+    }
+    return style
+  }
+
   render() {
     const { shelfTitle, shelf, books, allBooks, onChangeShelf } = this.props
     let noBook = shelfTitle === "Results" ? "No Results" : "No Book"
+
     return (
       <div>
         <div className="bookshelf">
@@ -26,10 +63,8 @@ class ListBooks extends Component {
                     <div className="book">
                       <div className="book-top">
                         { book.imageLinks && book.imageLinks.thumbnail &&
-                          <div className="book-cover"
-                               style={{width: 128,
-                                       height: 193,
-                                       backgroundImage: `url(${book.imageLinks.thumbnail})`}}>
+                          <div className="book-cover custom-book-cover"
+                               style={this.bookCoverStyle(book.imageLinks.thumbnail)}>
                           </div>
                         }
                         <div className="book-shelf-changer">

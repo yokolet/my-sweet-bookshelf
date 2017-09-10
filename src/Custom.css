@@ -25,3 +25,18 @@
 .custom-search-books-result {
   background-color: #fffff0;
 }
+
+@media (max-width: 500px) {
+  .list-books-title h1 {
+    font-size: 28px;
+  }
+
+  .custom-shelf-title {
+    font-size: 20px;
+  }
+
+  .book-top {
+    width: 108px;
+    height: 160px;
+  }
+}
